@@ -1,0 +1,90 @@
+Implement Prims Algorithm for Minimum Spanning Tree.
+#include <stdbool.h>;
+#include <stdio.h>;
+#define V 4
+
+int minKey(int key[], bool mstSet[])
+{
+// Initialize min value
+int min = 99999, min_index;
+
+for (int v = 0; v &lt; V; v++)
+if (mstSet[v] == false &amp;&amp; key[v] &lt; min)
+min = key[v], min_index = v;
+
+return min_index;
+}
+
+int printMST(int parent[], int graph[V][V])
+{
+int sumofMSTWeight=0;
+printf(&quot;Edge Pair \tWeight\n&quot;);
+for (int i = 1; i &lt; V; i++)
+{
+sumofMSTWeight += graph[i][parent[i]];
+printf(&quot;%d - %d \t\t%d \n&quot;, parent[i], i, graph[i][parent[i]]);
+}
+printf(&quot;Total Cost of MST: %d \n&quot;, sumofMSTWeight);
+}
+
+void primsAlgoMST(int graph[V][V])
+{
+// Array to store constructed MST
+int parent[V];
+
+// Key values used to pick minimum weight edge in cut
+int key[V];
+// To represent set of vertices included in MST
+bool mstSet[V];
+
+// Initialize all keys as INFINITE
+for (int i = 0; i &lt; V; i++)
+{
+key[i] = 99999;
+mstSet[i] = false;
+}
+// Always include first 1st vertex in MST.
+// Make key 0 so that this vertex is picked as first vertex.
+key[0] = 0;
+parent[0] = -1; // First node is always root of MST
+
+// The MST will have V vertices
+for (int count = 0; count &lt; V - 1; count++) {
+// Pick the minimum key vertex from the
+// set of vertices not yet included in MST
+int u = minKey(key, mstSet);
+
+// Add the picked vertex to the MST Set
+mstSet[u] = true;
+
+for (int v = 0; v &lt; V; v++)
+
+if (mstSet[v] == false &amp;&amp; graph[u][v] &lt; key[v])
+parent[v] = u, key[v] = graph[u][v];
+}
+
+// print the constructed MST
+printMST(parent, graph);
+}
+
+// driver program to test above function
+void main()
+{
+/* Let us have the following complete graph
+1
+(0)-----------(1)
+| \ / |
+| \3 / |
+4| \ / |2
+| / \ |
+| /4 \ |
+(2)---------(3)
+4 */
+int graph[V][V] = { { 0, 1, 4, 3 },
+{ 1, 0, 4, 2 },
+{ 4, 4, 0, 4 },
+
+{ 3, 2, 4, 0 } };
+// Print the solution
+primsAlgoMST(graph);
+}
